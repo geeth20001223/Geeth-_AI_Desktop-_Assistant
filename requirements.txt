@@ -2,3 +2,4 @@ numpy
 pandas
 flask
 tensorflow
+pytest  # Include pytest for testing
