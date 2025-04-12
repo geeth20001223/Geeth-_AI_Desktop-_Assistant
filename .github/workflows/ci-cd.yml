@@ -32,11 +32,13 @@ jobs:
 
       - name: Run Tests
         run: |
-          pytest tests/ || code=$?
-          if [[ $code -eq 5 ]]; then
+          pytest tests/
+          exit_code=$?
+          if [[ $exit_code -eq 5 ]]; then
             echo "⚠️ No tests were found, but continuing..."
+            exit 0
           else
-            exit $code
+            exit $exit_code
           fi
 
   deploy:
