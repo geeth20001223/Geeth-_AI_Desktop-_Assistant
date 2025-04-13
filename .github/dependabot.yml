@@ -1,0 +1,8 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "GEETH_AI" # Location of package.json
+    schedule:
+      interval: "weekly" # Options: daily, weekly, monthly
+    commit-message:
+      prefix: "chore"
