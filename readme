@@ -1,0 +1,17 @@
+first install all these modules using commands as follows one by one
+
+pip install eel
+pip install playmusic
+pip install pyaudio
+pip install pyautogui
+pip install pyttsx3
+pip install --ignore-requires-python SpeechRecognition
+pip install pywhatkit
+pip install pvporcupine
+pip install hugchat
+pip install opencv-contrib-python
+
+then delete all images in the C:\Users\your user name\Desktop\AI\Geeth_AI\engine\auth\samples this path
+then run trainer.py C:\Users\your user name\Desktop\AI\Geeth_AI\engine\auth\trainer.py
+
+finally run (run.py)
