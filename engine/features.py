@@ -13,19 +13,21 @@ import pyautogui
 from engine.command import speak
 from engine.config import ASSISTANT_NAME
 # Playing assiatnt sound function
+from playsound import playsound
 import pywhatkit as kit
 import pvporcupine
 
 from engine.helper import extract_yt_term, remove_words
 from hugchat import hugchat
 
+
 con = sqlite3.connect("geeth.db")
 cursor = con.cursor()
 
 @eel.expose
 def playAssistantSound():
-    music_dir = "docs\\www\\assets\\audio\\start_sound.mp3"
-    playsound(music_dir)
+    playsound(r"C:\Users\shama\Desktop\AI\Geeth_AI\www\assets\audio\start_sound.mp3")
+
 
     
 def openCommand(query):
