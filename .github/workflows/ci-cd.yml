@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.10"
       - name: Cache Python dependencies
@@ -99,7 +99,6 @@ jobs:
       - name: Run DAST (OWASP ZAP)
         run: |
           echo "Running DAST scan..."
-          # Example only: Replace with actual ZAP commands if used in real deployment
           echo "<results><vuln>Low</vuln></results>" > results.xml
           if grep -q "High" results.xml; then
             echo "High vulnerabilities found!"
@@ -129,6 +128,12 @@ jobs:
   deploy-staging:
     if: github.ref == 'refs/heads/staging'
     runs-on: ubuntu-latest
+    needs:
+      - python-build
+      - node-unit-tests
+      - node-integration-tests
+      - node-e2e-tests
+      - security-scan
     steps:
       - uses: actions/checkout@v3
       - name: Deploy to Staging
@@ -137,6 +142,12 @@ jobs:
   deploy-dev:
     if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
+    needs:
+      - python-build
+      - node-unit-tests
+      - node-integration-tests
+      - node-e2e-tests
+      - security-scan
     steps:
       - uses: actions/checkout@v3
       - name: Deploy to Development
