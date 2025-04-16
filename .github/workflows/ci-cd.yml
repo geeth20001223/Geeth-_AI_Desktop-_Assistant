@@ -115,7 +115,7 @@ jobs:
           snyk test --all-projects || echo "✅ Snyk scan complete. Vulnerabilities may exist (not breaking build)."
 
   deploy-prod:
-    if: github.event_name == 'push' && github.ref_name == 'main'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs:
       - python-build
@@ -129,7 +129,7 @@ jobs:
         run: echo "🚀 Deploying to Production environment..."
 
   deploy-staging:
-    if: github.event_name == 'push' && github.ref_name == 'staging'
+    if: github.ref == 'refs/heads/staging'
     runs-on: ubuntu-latest
     needs:
       - python-build
@@ -143,7 +143,7 @@ jobs:
         run: echo "🚀 Deploying to Staging environment..."
 
   deploy-dev:
-    if: github.event_name == 'push' && github.ref_name == 'dev'
+    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     needs:
       - python-build
