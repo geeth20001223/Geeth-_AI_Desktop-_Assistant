@@ -48,8 +48,11 @@ jobs:
 
           elif [ "$BRANCH_NAME" = "staging" ]; then
             echo "🚀 Deploying to STAGING server..."
-            ssh -i key.pem -o StrictHostKeyChecking=no azureuser@STAGING_SERVER_IP << 'EOF'
-              cd /home/azureuser/Geeth-_AI_Desktop-_Assistant git pull origin staging systemctl restart geeth-assistant.service EOF
+            ssh -o StrictHostKeyChecking=no -i key.pem azureuser@STAGING_SERVER_IP << 'EOF'
+cd /home/azureuser/Geeth-_AI_Desktop-_Assistant
+git pull origin staging
+systemctl restart geeth-assistant.service
+EOF
 
           elif [ "$BRANCH_NAME" = "main" ]; then
             echo "🚀 Deploying to PRODUCTION server..."
