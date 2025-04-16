@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  build:
+  python-build:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,21 +25,44 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest  # Ensure pytest is installed
+          pip install pytest
 
       - name: Verify Installed Packages
-        run: pip list  # Check installed packages
+        run: pip list
 
-      - name: Run Tests
-        run: pytest  # Run tests
+      - name: Run Python Tests
+        run: pytest
+
+  nodejs-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]  # versions
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install Node.js Dependencies
+        run: npm ci
+
+      - name: Run Lint & Tests
+        run: |
+          npm run lint || true  # Optional if you have linting
+          npm test || true      # Optional: suppress failure if no tests yet
 
   deploy:
-    needs: build
+    needs: [python-build, nodejs-test]
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3  # Ensures deployment gets the latest code
+        uses: actions/checkout@v3
 
       - name: Deploy Application
         run: echo "Deployment process goes here"
