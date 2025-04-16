@@ -14,7 +14,7 @@ jobs:
     steps:
       # Step 1: Checkout Code
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # Step 2: Setup Python
       - name: Setup Python
@@ -28,25 +28,34 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Step 4: Setup SSH Access
-      - name: Setup SSH Key
+      # Step 4: Setup SSH Private Key
+      - name: Setup SSH Private Key
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
           chmod 600 key.pem
 
-      # Step 5: Deploy Based on Branch
-      - name: Deploy to Appropriate Environment
+      # Step 5: Deploy to Correct Environment
+      - name: Deploy to Environment
+        env:
+          BRANCH_NAME: ${{ github.ref_name }}
         run: |
-          echo "Current branch: ${{ github.ref }}"
-          
-          if [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
-            echo "🚀 Deploying to DEV server"
-            ssh -o StrictHostKeyChecking=no -i key.pem user@DEV_SERVER_IP "cd /path/to/dev/app && git pull && systemctl restart your-app-service"
+          echo "📦 Deploying from branch: $BRANCH_NAME"
 
-          elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
-            echo "🚀 Deploying to STAGING server"
-            ssh -o StrictHostKeyChecking=no -i key.pem user@STAGING_SERVER_IP "cd /path/to/staging/app && git pull && systemctl restart your-app-service"
+          if [ "$BRANCH_NAME" = "dev" ]; then
+            echo "🚀 Deploying to DEV server..."
+            ssh -o StrictHostKeyChecking=no -i key.pem azureuser@20.195.40.50 \
+              'cd /home/azureuser/Geeth-_AI_Desktop-_Assistant && git pull origin dev && systemctl restart geeth-assistant.service'
 
-          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "🚀 Deploying to PRODUCTION server"
-            ssh -o StrictHostKeyChecking=no -i key.pem user@PROD_SERVER_IP "cd /path/to/prod/app && git pull && systemctl restart your-app-service"
+          elif [ "$BRANCH_NAME" = "staging" ]; then
+            echo "🚀 Deploying to STAGING server..."
+            ssh -i key.pem -o StrictHostKeyChecking=no azureuser@STAGING_SERVER_IP << 'EOF'
+              cd /home/azureuser/Geeth-_AI_Desktop-_Assistant git pull origin staging systemctl restart geeth-assistant.service EOF
+
+          elif [ "$BRANCH_NAME" = "main" ]; then
+            echo "🚀 Deploying to PRODUCTION server..."
+            ssh -o StrictHostKeyChecking=no -i key.pem azureuser@PROD_SERVER_IP \
+              'cd /home/azureuser/Geeth-_AI_Desktop-_Assistant && git pull origin main && systemctl restart geeth-assistant.service'
+
+          else
+            echo "❌ Unknown branch: $BRANCH_NAME"
+            exit 1
