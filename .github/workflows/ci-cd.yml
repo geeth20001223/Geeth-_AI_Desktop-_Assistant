@@ -2,16 +2,13 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   python-build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -27,42 +24,46 @@ jobs:
           pip install -r requirements.txt
           pip install pytest
 
-      - name: Verify Installed Packages
-        run: pip list
-
       - name: Run Python Tests
         run: pytest
 
-  nodejs-test:
+  node-unit-tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x]  # versions
-
+        node-version: [16.x, 18.x, 20.x]
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - run: npm run test:unit
 
-      - name: Install Node.js Dependencies
-        run: npm ci
+  node-integration-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+      - run: npm ci
+      - run: npm run test:integration
 
-      - name: Run Lint & Tests
-        run: |
-          npm run lint || true  # Optional if you have linting
-          npm test || true      # Optional: suppress failure if no tests yet
+  node-e2e-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+      - run: npm ci
+      - run: npm run test:e2e
 
   deploy:
-    needs: [python-build, nodejs-test]
+    needs: [python-build, node-unit-tests, node-integration-tests, node-e2e-tests]
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@v3
       - name: Deploy Application
         run: echo "Deployment process goes here"
