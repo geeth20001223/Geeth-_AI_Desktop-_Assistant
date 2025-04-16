@@ -113,8 +113,8 @@ jobs:
           snyk auth $SNYK_TOKEN
           snyk test --all-projects --fail-on=all
 
-  deploy-prod:
-    if: github.ref_name == 'main'
+  deploy-dev:
+    if: github.ref_name == 'dev'
     runs-on: ubuntu-latest
     needs:
       - python-build
@@ -124,8 +124,14 @@ jobs:
       - security-scan
     steps:
       - uses: actions/checkout@v3
-      - name: Deploy to Production
-        run: echo "🚀 Deploying to Production environment..."
+      - name: Deploy to Development
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > key.pem
+          chmod 600 key.pem
+          ssh -o StrictHostKeyChecking=no -i key.pem azureuser@20.195.40.50 \
+          'cd /home/azureuser/Geeth-_AI_Desktop-_Assistant && git pull origin dev && systemctl restart geeth-assistant.service'
 
   deploy-staging:
     if: github.ref_name == 'staging'
@@ -139,10 +145,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Deploy to Staging
-        run: echo "🚀 Deploying to Staging environment..."
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > key.pem
+          chmod 600 key.pem
+          ssh -i key.pem -o StrictHostKeyChecking=no azureuser@STAGING_SERVER_IP << 'EOF'
+          cd /home/azureuser/Geeth-_AI_Desktop-_Assistant git pull origin staging systemctl restart geeth-assistant.service EOF
 
-  deploy-dev:
-    if: github.ref_name == 'dev'
+  deploy-prod:
+    if: github.ref_name == 'main'
     runs-on: ubuntu-latest
     needs:
       - python-build
@@ -152,5 +164,11 @@ jobs:
       - security-scan
     steps:
       - uses: actions/checkout@v3
-      - name: Deploy to Development
-        run: echo "🚀 Deploying to Development environment..."
+      - name: Deploy to Production
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > key.pem
+          chmod 600 key.pem
+          ssh -o StrictHostKeyChecking=no -i key.pem azureuser@PROD_SERVER_IP \
+            'cd /home/azureuser/Geeth-_AI_Desktop-_Assistant && git pull origin main && systemctl restart geeth-assistant.service'
