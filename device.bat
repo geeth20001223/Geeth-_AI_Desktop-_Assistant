@@ -1,4 +1,5 @@
 @echo off
+python synthetic_monitor.py
 
 rem Disconnect any existing ADB connections
 echo Disconnecting old connections...
