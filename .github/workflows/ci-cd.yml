@@ -107,17 +107,15 @@ jobs:
           echo "<results><vuln>Low</vuln></results>" > results.xml
           echo "OWASP ZAP scan completed ✅"
 
-      # --- Snyk Safe Mode ---
-      - name: Run Snyk (Optional & Safe)
+      # --- Snyk Auth & Test (with secret token) ---
+      - name: Run Snyk Security Scan
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
-          echo "Starting Snyk..."
+          echo "🔒 Running Snyk scan..."
           npm install -g snyk
-          snyk auth "${SNYK_TOKEN}" || echo "⚠️ Snyk auth skipped (token missing or failed in CI)."
+          snyk auth "${SNYK_TOKEN}" || echo "⚠️ Snyk auth failed (check token or permissions)."
           snyk test --all-projects || echo "✅ Snyk scan complete. Vulnerabilities found (ignored in CI)."
-
-
 
   deploy-prod:
     if: github.ref == 'refs/heads/main'
