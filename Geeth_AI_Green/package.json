@@ -1,0 +1,35 @@
+{
+  "name": "geeth_ai",
+  "version": "1.0.3",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+ "scripts": {
+  "test": "echo \"No tests yet\" && exit 0",
+  "test:unit": "echo \"✅ Unit tests placeholder\" && exit 0",
+  "test:integration": "echo \"✅ Integration tests placeholder\" && exit 0",
+  "test:e2e": "echo \"✅ E2E tests placeholder\" && exit 0",
+  "prepare": "husky",
+  "docs:update": "node updateDocs.js",
+  "release": "standard-version"
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geeth20001223/Geeth-_AI_Desktop-_Assistant.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/geeth20001223/Geeth-_AI_Desktop-_Assistant/issues"
+  },
+  "homepage": "https://github.com/geeth20001223/Geeth-_AI_Desktop-_Assistant#readme",
+  "description": "",
+  "devDependencies": {
+    "@commitlint/config-conventional": "^19.8.0",
+    "commitlint": "^19.8.0",
+    "husky": "^9.1.7",
+    "standard-version": "^9.5.0"
+  }
+}

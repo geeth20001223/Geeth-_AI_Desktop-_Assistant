@@ -47,9 +47,23 @@ jobs:
               'cd /home/azureuser/Geeth-_AI_Desktop-_Assistant && git pull origin staging && sudo systemctl restart geeth-assistant.service'
 
           elif [ "$BRANCH_NAME" = "main" ]; then
-            echo "🚀 Deploying to PRODUCTION server..."
-            ssh -o StrictHostKeyChecking=no -i key.pem azureuser@20.195.40.50 \
-              'cd /home/azureuser/Geeth-_AI_Desktop-_Assistant && git pull origin main && sudo systemctl restart geeth-assistant.service'
+            echo "🚀 Deploying to PRODUCTION server (Blue-Green)..."
+            ssh -o StrictHostKeyChecking=no -i key.pem azureuser@20.195.40.50 << 'EOF'
+              ACTIVE=$(readlink -f /home/azureuser/current)
+              if [[ "$ACTIVE" == *"blue" ]]; then
+                echo "🔄 Blue is active. Deploying to Green..."
+                cd /home/azureuser/green
+                git pull origin main
+                sudo systemctl restart geeth-green.service
+                ln -sfn /home/azureuser/green /home/azureuser/current
+              else
+                echo "🔄 Green is active. Deploying to Blue..."
+                cd /home/azureuser/blue
+                git pull origin main
+                sudo systemctl restart geeth-blue.service
+                ln -sfn /home/azureuser/blue /home/azureuser/current
+              fi
+            EOF
 
           else
             echo "❌ Unknown branch: $BRANCH_NAME"
