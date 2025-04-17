@@ -54,3 +54,4 @@ jobs:
           else
             echo "❌ Unknown branch: $BRANCH_NAME"
             exit 1
+          fi
