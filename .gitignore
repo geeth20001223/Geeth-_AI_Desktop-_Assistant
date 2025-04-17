@@ -1,0 +1,15 @@
+# Backup folder
+backups/
+
+# SQLite DB
+*.db
+
+# Virtual environments
+.venv/
+__pycache__/
+
+# Windows batch files (optional)
+*.bat
+
+# Node stuff
+node_modules/
