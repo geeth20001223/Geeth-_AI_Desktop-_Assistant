@@ -45,15 +45,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+           python -m pip install --upgrade pip
+           pip install -r requirements.txt
 
       - name: Setup SSH Key
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
           chmod 600 key.pem
 
-      - name: Deploy to Environment
+      - name: Deploy to environment
         env:
           BRANCH_NAME: ${{ github.ref_name }}
         run: |
@@ -77,13 +77,13 @@ jobs:
           else
             echo "❌ Unknown branch: $BRANCH_NAME"
             exit 1
+          fi
 
-      - name: Run DAST Scan
+      - name: DAST Scan Simulation
         run: |
           echo "Running DAST scan..."
           echo "<results><vuln>Low</vuln></results>" > results.xml
           if grep -q "High" results.xml; then
-            echo "❌ High vulnerabilities found!"
-            exit 1
-          else
-            echo "✅ No high vulnerabilities."
+            echo "High vulnerabilities found!"
+          exit 1
+          fi
