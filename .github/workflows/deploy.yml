@@ -1,4 +1,4 @@
-name: Deploy to Environment
+name: Deploy to Azure VM
 
 on:
   push:
@@ -12,60 +12,58 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
+      - name: Set up SSH key
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
 
-      - name: Setup SSH Private Key
-        run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
-          chmod 600 key.pem
-
-      - name: Deploy to Correct Environment
+      - name: Deploy based on branch
         env:
           BRANCH_NAME: ${{ github.ref_name }}
         run: |
-          echo "📦 Deploying from branch: $BRANCH_NAME"
+          echo "🔍 Branch is $BRANCH_NAME"
 
-          if [ "$BRANCH_NAME" = "dev" ]; then
-            echo "🚀 Deploying to DEV server..."
-            ssh -o StrictHostKeyChecking=no -i key.pem azureuser@20.195.40.50 \
-              'cd /home/azureuser/Geeth-_AI_Desktop-_Assistant && git pull origin dev && sudo systemctl restart geeth-assistant.service'
+          if [[ "$BRANCH_NAME" == "dev" ]]; then
+            echo "🧪 Deploying to DEVELOPMENT environment..."
+            ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa azureuser@20.195.40.50 'bash -s' <<'EOSSH'
+          cd /home/azureuser/Geeth_AI_Blue
+          git pull origin dev
+          sudo systemctl restart geeth-dev.service
+          EOSSH
 
-          elif [ "$BRANCH_NAME" = "staging" ]; then
-            echo "🚀 Deploying to STAGING server..."
-            ssh -o StrictHostKeyChecking=no -i key.pem azureuser@20.195.40.50 \
-              'cd /home/azureuser/Geeth-_AI_Desktop-_Assistant && git pull origin staging && sudo systemctl restart geeth-assistant.service'
+          elif [[ "$BRANCH_NAME" == "staging" ]]; then
+            echo "🛠️ Deploying to STAGING environment..."
+            ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa azureuser@20.195.40.50 'bash -s' <<'EOSSH'
+          cd /home/azureuser/Geeth_AI_Green
+          git pull origin staging
+          sudo systemctl restart geeth-staging.service
+          EOSSH
 
-          elif [ "$BRANCH_NAME" = "main" ]; then
-            echo "🚀 Deploying to PRODUCTION server (Blue-Green)..."
-            ssh -o StrictHostKeyChecking=no -i key.pem azureuser@20.195.40.50 << 'EOF'
-              ACTIVE=$(readlink -f /home/azureuser/current)
-              if [[ "$ACTIVE" == *"blue" ]]; then
-                echo "🔄 Blue is active. Deploying to Green..."
-                cd /home/azureuser/green
-                git pull origin main
-                sudo systemctl restart geeth-green.service
-                ln -sfn /home/azureuser/green /home/azureuser/current
-              else
-                echo "🔄 Green is active. Deploying to Blue..."
-                cd /home/azureuser/blue
-                git pull origin main
-                sudo systemctl restart geeth-blue.service
-                ln -sfn /home/azureuser/blue /home/azureuser/current
-              fi
-            EOF
-
+          elif [[ "$BRANCH_NAME" == "main" ]]; then
+            echo "🚀 Deploying to PRODUCTION environment (Blue-Green)..."
+            ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa azureuser@20.195.40.50 'bash -s' <<'EOSSH'
+          ACTIVE=$(readlink -f /home/azureuser/current)
+          if [[ "$ACTIVE" == *blue* ]]; then
+          echo "🟢 Blue is active. Deploying to Green..."
+          cd /home/azureuser/Geeth_AI_Green
+          git pull origin main
+          sudo systemctl restart geeth-green.service
+          ln -sfn /home/azureuser/Geeth_AI_Green /home/azureuser/current
+          sudo systemctl stop geeth-blue.service
           else
-            echo "❌ Unknown branch: $BRANCH_NAME"
-            exit 1
+          echo "🔵 Green is active. Deploying to Blue..."
+          cd /home/azureuser/Geeth_AI_Blue
+          git pull origin main
+          sudo systemctl restart geeth-blue.service
+          ln -sfn /home/azureuser/Geeth_AI_Blue /home/azureuser/current
+          sudo systemctl stop geeth-green.service
           fi
+          EOSSH
+          else
+                    echo "❌ Unknown branch: $BRANCH_NAME"
+                    exit 1
+                  fi
