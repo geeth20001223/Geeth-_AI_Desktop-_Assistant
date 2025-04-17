@@ -1,7 +1,7 @@
 from sys import flags
 import time
-import cv2 # type: ignore
-import pyautogui as p # type: ignore
+import cv2
+import pyautogui as p
 
 
 def AuthenticateFace():
@@ -84,5 +84,3 @@ def AuthenticateFace():
     cam.release()
     cv2.destroyAllWindows()
     return flag
-
-AuthenticateFace()
