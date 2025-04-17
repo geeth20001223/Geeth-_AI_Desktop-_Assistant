@@ -5,6 +5,9 @@ on:
     - cron: "0 */6 * * *" # Runs every 6 hours
   workflow_dispatch:
 
+permissions:
+  issues: write  # This line gives access to add labels to issues
+
 jobs:
   check-issues:
     runs-on: ubuntu-latest
