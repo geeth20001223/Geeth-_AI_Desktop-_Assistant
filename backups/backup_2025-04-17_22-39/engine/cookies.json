@@ -1,0 +1,67 @@
+[
+    {
+      "domain": ".huggingface.co",
+      "expirationDate": 1774253552,
+      "hostOnly": false,
+      "httpOnly": false,
+      "name": "__stripe_mid",
+      "path": "/",
+      "sameSite": "strict",
+      "secure": true,
+      "session": false,
+      "storeId": "0",
+      "value": "bf19cfae-2d25-4ca8-807f-6bc853b32a9950501f"
+    },
+    {
+      "domain": ".huggingface.co",
+      "expirationDate": 1742719352,
+      "hostOnly": false,
+      "httpOnly": false,
+      "name": "__stripe_sid",
+      "path": "/",
+      "sameSite": "strict",
+      "secure": true,
+      "session": false,
+      "storeId": "0",
+      "value": "f693a000-f5f0-4edd-8bfc-b0ed894f52f1c99a8b"
+    },
+    {
+      "domain": "huggingface.co",
+      "expirationDate": 1774253406.888592,
+      "hostOnly": true,
+      "httpOnly": true,
+      "name": "token",
+      "path": "/",
+      "sameSite": "no_restriction",
+      "secure": true,
+      "session": false,
+      "storeId": "0",
+      "value": "hCiiZhtjniZkagCLzltZzgfAqBJOgmLKFalXrMZpDrVlINGbwibyssaTIyEhqyzmKFtVTqmMkRuDerBJDblxOXedXhNbbzjkYlTejwOslFINyHuBCQbSVtqJafrDZgtm"
+    },
+    {
+      "domain": "huggingface.co",
+      "expirationDate": 1743927247.801295,
+      "hostOnly": true,
+      "httpOnly": true,
+      "name": "hf-chat",
+      "path": "/",
+      "sameSite": "lax",
+      "secure": true,
+      "session": false,
+      "storeId": "0",
+      "value": "c03df2f9-b9ff-4417-bc23-9e82e5d6d06b"
+    },
+    {
+      "domain": ".huggingface.co",
+      "expirationDate": 1743063155,
+      "hostOnly": false,
+      "httpOnly": false,
+      "name": "aws-waf-token",
+      "path": "/",
+      "sameSite": "lax",
+      "secure": true,
+      "session": false,
+      "storeId": "0",
+      "value": "213979f1-9718-4a57-9e03-db712743a281:HgoAclM4+OgRAAAA:tVlvf+WSRtHLDnmsR7nRbfB3O84nH0KwgYS0KEeZQnDbG7Ix4tukDqqi9LOktvDrAHNV0h54LsYeSdOU5npHUruMd/7qHwF5v/oRfIZeecAKHy7rLAzv/GDqHjhzK8E09Gb9YpKv9pKPtkEq/UzuUtntF12SK9z/CcEuo9AXARlAh6g64cBpPMKoQXN3EhaNgD57pnGWEVYaoODa4oEH97Hxu7vQe40dgPy3spHyMQ2nXYe4QQcvIbhkjqPizHYLa4f+JBEZAVx7YuQ3rYU="
+    }
+  ]

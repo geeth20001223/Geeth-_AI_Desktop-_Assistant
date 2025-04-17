@@ -1,5 +1,5 @@
 # Backup folder
-backups/
+#backups/
 
 # SQLite DB
 *.db
