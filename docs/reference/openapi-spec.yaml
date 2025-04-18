@@ -1,0 +1,20 @@
+openapi: 3.0.0
+info:
+  title: Geeth_AI Monitoring API
+  description: API for system health and synthetic monitoring endpoints.
+  version: 1.0.0
+paths:
+  /metrics:
+    get:
+      summary: Prometheus metrics endpoint
+      responses:
+        '200':
+          description: Metrics returned successfully
+  /health:
+    get:
+      summary: Application health check endpoint
+      responses:
+        '200':
+          description: OK - Application is healthy
+        '500':
+          description: Error - Application is not healthy
