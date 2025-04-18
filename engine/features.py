@@ -140,17 +140,17 @@ def whatsApp(mobile_no, message, flag, name):
 
     if flag == 'message':
         target_tab = 12
-        jarvis_message = "message send successfully to "+name
+        geeth_message = "message send successfully to "+name
 
     elif flag == 'call':
         target_tab = 7
         message = ''
-        jarvis_message = "calling to "+name
+        geeth_message = "calling to "+name
 
     else:
         target_tab = 6
         message = ''
-        jarvis_message = "staring video call with "+name
+        geeth_message = "staring video call with "+name
 
 
     # Encode the message for URL
@@ -173,7 +173,7 @@ def whatsApp(mobile_no, message, flag, name):
         pyautogui.hotkey('tab')
 
     pyautogui.hotkey('enter')
-    speak(jarvis_message)
+    speak(geeth_message)
 
 # chat bot 
 def chatBot(query):
